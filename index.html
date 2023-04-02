@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <title>Assignment 4</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
+    <script src="script.js"></script>
+    </script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Molecule.io</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./index.html">Home</a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./upload.html">Upload</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./select.html">Select</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./display.html">Display</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+    <br>
+    <div class="row d-flex justify-content-center">
+        <div class="row d-flex justify-content-center mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Element number:</label>
+            <div class="col-sm-3">
+                <input type="number" class="form-control" id="element_number">
+            </div>
+        </div>
+
+
+        <div class="row d-flex justify-content-center mb-3">
+
+            <div class="class=row d-flex justify-content-center mb-3 dropdown">
+                <label for="inputPassword3" class="col-sm-2 col-form-label">Element_code</label>
+                <div class="col-sm-3">
+                    <button id="element_code" class="btn btn-primary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Select below
+                    </button>
+                    <ul id="menu" class="dropdown-menu">
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-center mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Element name: </label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="element_name">
+            </div>
+        </div>
+
+
+        <div class="row d-flex justify-content-center mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Color 1: </label>
+            <div class="col-sm-3">
+                <input type="color" id="color1" value="#fffff">
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-center mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Color 2: </label>
+            <div class="col-sm-3">
+                <input type="color" id="color2" value="#f0f0f0">
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-center mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Color 3: </label>
+            <div class="col-sm-3">
+                <input type="color" id="color3" value="#0000ff">
+            </div>
+        </div>
+
+        <div class="row d-flex justify-content-center mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Radius: </label>
+            <div class="col-sm-3">
+                <input type="number" class="form-control" id="radius">
+            </div>
+        </div>
+
+
+        <button type="submit" id="add_element" class="btn btn-success">Add an element</button>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+
+
+
+
+</body>
+
+</html>

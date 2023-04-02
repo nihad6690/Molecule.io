@@ -141,6 +141,9 @@ class Database:
             self.add_bond(name, obj.get_bond(i))
         
         self.conn.commit()
+    
+    def getAllNames(self):
+        return list(self.conn.execute("""SELECT NAME from Molecules """))
 
     #https://www.geeksforgeeks.org/python-remove-duplicate-tuples-from-list-of-tuples/
     def removeDuplicates(self, arr):
