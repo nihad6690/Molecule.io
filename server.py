@@ -16,6 +16,16 @@ def first_handler(db):
 
       def do_GET(self):
 
+         if self.path == "/get_element.html":
+            self.send_response(200);
+            self.send_header("Content-type", "text/html")
+            elements = db.conn.execute( "SELECT * FROM Elements;" ).fetchall()
+            
+            res = str(elements)
+            self.send_header( "Content-length", len(res) );
+            self.end_headers();
+            self.wfile.write( bytes( res, "utf-8" ) );
+
          if self.path == "/get_mol.html":
             self.send_response(200);
             self.send_header("Content-type", "text/html")
@@ -53,6 +63,23 @@ def first_handler(db):
             self.wfile.write( bytes( page, "utf-8" ) );
 
       def do_POST(self):
+
+         if self.path == "/remove_element_handler.html":
+            content_length = int(self.headers['Content-Length']);
+            body = self.rfile.read(content_length);
+            postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
+            print(  postvars);
+            cur_element = postvars['remove_element[]']
+            db.conn.execute("""DELETE FROM Elements WHERE ELEMENT_NAME = ?""", (cur_element[2],))
+            message = "data received";
+
+            self.send_response( 200 ); # OK
+            self.send_header( "Content-type", "text/plain" );
+            self.send_header( "Content-length", len(message) );
+            self.end_headers();
+
+            self.wfile.write( bytes( message, "utf-8" ) );
+
          if self.path == "/upload_handler.html":
 
             # this is specific to 'multipart/form-data' encoding used by POST
@@ -104,16 +131,17 @@ def first_handler(db):
             body = self.rfile.read(content_length);
 
             print( repr( body.decode('utf-8') ) );
+            
 
             # convert POST content into a dictionary
             postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
-
-            print(  postvars);
-            mol_name = postvars['mol_name'][0]
-            file_content = postvars['fileInfo'][0]
-            print(file_content)
-            mol_file = io.TextIOWrapper(io.BytesIO(bytes(file_content, 'UTF-8')))
-            db.add_molecule(mol_name, mol_file)
+            element_info = [postvars['element_num'][0], postvars['element_code'][0], postvars['element_name'][0], postvars['color_1'][0], postvars['color_2'][0], postvars['color_3'][0], postvars['radius'][0]]
+            print(element_info)
+            db['Elements'] = (element_info[0], element_info[1], element_info[2], element_info[3], element_info[4], element_info[5], element_info[6])
+            MolDisplay.radius = db.radius(); 
+            MolDisplay.element_name = db.element_name(); 
+            MolDisplay.header += db.radial_gradients();
+            print(element_info)
             
             
 
@@ -136,8 +164,13 @@ def first_handler(db):
 
 
 
-db = molsql.Database(reset=False);
-
+db = molsql.Database(reset=True); 
+db.create_tables(); 
+ 
+db['Elements'] = ( 1, 'H', 'Hydrogen', 'FFFFFF', '050505', '020202', 25 ); 
+db['Elements'] = ( 6, 'C', 'Carbon',   '808080', '010101', '000000', 40 ); 
+db['Elements'] = ( 7, 'N', 'Nitrogen', '0000FF', '000005', '000002', 40 ); 
+db['Elements'] = ( 8, 'O', 'Oxygen',   'FF0000', '050000', '020000', 40 );
 MolDisplay.radius = db.radius(); 
 MolDisplay.element_name = db.element_name(); 
 MolDisplay.header += db.radial_gradients();
