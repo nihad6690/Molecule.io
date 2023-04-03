@@ -96,19 +96,23 @@ def first_handler(db):
             file_content = postvars['fileInfo'][0]
             print(file_content)
             mol_file = io.TextIOWrapper(io.BytesIO(bytes(file_content, 'UTF-8')))
-            db.add_molecule(mol_name, mol_file)
-            
-            
-
-            message = "data received";
-
-            self.send_response( 200 ); # OK
-            self.send_header( "Content-type", "text/plain" );
-            self.send_header( "Content-length", len(message) );
-            self.end_headers();
-
-            self.wfile.write( bytes( message, "utf-8" ) );
-      
+            try:
+               db.add_molecule(mol_name, mol_file)
+               mol = db.load_mol(mol_name)
+               mol.svg()
+               message = "data received";
+               self.send_response( 200 ); # OK
+               self.send_header( "Content-type", "text/plain" );
+               self.send_header( "Content-length", len(message) );
+               self.end_headers();
+               self.wfile.write( bytes( message, "utf-8" ) );
+            except Exception as e:
+               message = "The file you have entered is not correct";
+               self.send_response( 200 ); # OK
+               self.send_header( "Content-type", "text/plain" );
+               self.send_header( "Content-length", len(message) );
+               self.end_headers();
+               self.wfile.write( bytes( message, "utf-8" ) );
          elif self.path == "/display_handler.html":
             content_length = int(self.headers['Content-Length']);
             body = self.rfile.read(content_length);
