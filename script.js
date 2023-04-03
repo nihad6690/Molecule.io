@@ -88,9 +88,9 @@ $(document).ready(() => {
                     element_num: document.getElementById('element_number').value,
                     element_code: element_code,
                     element_name: document.getElementById('element_name').value,
-                    color_1: document.getElementById('color1').value,
-                    color_2: document.getElementById('color2').value,
-                    color_3: document.getElementById('color3').value,
+                    color_1: document.getElementById('color1').value.slice(1).toUpperCase(),
+                    color_2: document.getElementById('color2').value.slice(1).toUpperCase(),
+                    color_3: document.getElementById('color3').value.slice(1).toUpperCase(),
                     radius: document.getElementById('radius').value
 
                 },
