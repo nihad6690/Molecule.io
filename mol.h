@@ -26,7 +26,10 @@ typedef struct molecule
 } molecule;
 
 typedef double xform_matrix[3][3];
-
+typedef struct mx_wrapper
+{
+  xform_matrix xform_matrix;
+} mx_wrapper;
 void atomset(atom *atom, char element[3], double *x, double *y, double *z);
 void atomget(atom *atom, char element[3], double *x, double *y, double *z);
 void bondset(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms,

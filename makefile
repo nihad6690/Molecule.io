@@ -6,7 +6,7 @@ INC = /usr/include/python3.7m
 LIB = /usr/lib/python3.7/config-3.7m-x86_64-linux-gnu
 PYTHON_VERSION = 3.7m
 
-all: _molecule.so m
+all: _molecule.so 
 
 libmol.so: mol.o
 	$(CC) -shared mol.o -o libmol.so -lm
@@ -23,8 +23,5 @@ swig: molecule.i
 _molecule.so: libmol.so molecule_wrap.o
 	$(CC) $(CFLAGS) -shared $(LDFLAGS) -lmol -L.$(LIB) -lpython$(PYTHON_VERSION) -dynamiclib -o _molecule.so molecule_wrap.o
 
-m: test7.c 
-	$(CC) $(CFLAGS) $(LDFLAGS) test7.c -o m -lmol -lm
-
 clean: 
-	rm *.o *.so molecule_wrap.c m
+	rm *.o *.so molecule_wrap.c

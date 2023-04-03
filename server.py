@@ -5,6 +5,7 @@ import sys;
 import io;
 import molsql
 import json
+import molecule
 from http.server import HTTPServer, BaseHTTPRequestHandler;
 
 
@@ -123,6 +124,13 @@ def first_handler(db):
             postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
             print(postvars)
             mol = db.load_mol(postvars['mol_name'][0])
+            
+            rotations = []
+            for n in postvars["rotations[]"]:
+               rotations.append(int(n))
+
+            mx = molecule.mx_wrapper(rotations[0],rotations[1],rotations[2]);
+            mol.xform( mx.xform_matrix );
             image = mol.svg()
 
             self.send_response(200)

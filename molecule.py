@@ -258,8 +258,33 @@ class molecule(_object):
 
     def sort(self):
         return _molecule.molecule_sort(self)
+
+    def xform(self, xform_matrix):
+        return _molecule.molecule_xform(self, xform_matrix)
 molecule_swigregister = _molecule.molecule_swigregister
 molecule_swigregister(molecule)
+
+class mx_wrapper(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, mx_wrapper, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, mx_wrapper, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["xform_matrix"] = _molecule.mx_wrapper_xform_matrix_set
+    __swig_getmethods__["xform_matrix"] = _molecule.mx_wrapper_xform_matrix_get
+    if _newclass:
+        xform_matrix = _swig_property(_molecule.mx_wrapper_xform_matrix_get, _molecule.mx_wrapper_xform_matrix_set)
+
+    def __init__(self, xrot, yrot, zrot):
+        this = _molecule.new_mx_wrapper(xrot, yrot, zrot)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _molecule.delete_mx_wrapper
+    __del__ = lambda self: None
+mx_wrapper_swigregister = _molecule.mx_wrapper_swigregister
+mx_wrapper_swigregister(mx_wrapper)
 
 
 def atomset(atom, element, x, y, z):
