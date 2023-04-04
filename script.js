@@ -82,19 +82,66 @@ $(document).ready(() => {
         else if (!document.getElementById('radius').value) {
             alert("Please enter a radius")
         } else {
+            let element_num = document.getElementById('element_number').value
+            let element_code = element_code
+            let element_name = document.getElementById('element_name').value
+            let color_1 = document.getElementById('color1').value.slice(1).toUpperCase()
+            let color_2 = document.getElementById('color2').value.slice(1).toUpperCase()
+            let color_3 = document.getElementById('color3').value.slice(1).toUpperCase()
+            let radius = document.getElementById('radius').value
             $.post("/add_handler.html",
                 /* pass a JavaScript dictionary */
                 {
-                    element_num: document.getElementById('element_number').value,
+                    element_num: element_num,
                     element_code: element_code,
-                    element_name: document.getElementById('element_name').value,
-                    color_1: document.getElementById('color1').value.slice(1).toUpperCase(),
-                    color_2: document.getElementById('color2').value.slice(1).toUpperCase(),
-                    color_3: document.getElementById('color3').value.slice(1).toUpperCase(),
-                    radius: document.getElementById('radius').value
+                    element_name: element_name,
+                    color_1: color_1,
+                    color_2: color_2,
+                    color_3: color_3,
+                    radius: radius
 
                 },
                 function (data, status) {
+
+                    cur = [element_num, element_code, element_name, color_1, color_2, color_3, radius]
+                    table_body = document.getElementById('table_body');
+                    let row = document.createElement("tr")
+                    for (let i = 0; i < 7; i++) {
+                        let cell = document.createElement("td")
+                        cell.innerText = cur[i]
+                        row.appendChild(cell)
+                    }
+                    cell = document.createElement("td")
+                    let btn = document.createElement("button")
+                    btn.className = "btn btn-danger"
+                    btn.innerText = "Delete Element"
+                    btn.addEventListener('click', (event) => {
+
+                        alert("Clicked button")
+                        console.log(event)
+                        let element = event.target.parentNode.parentNode.innerText.split('\t')
+                        element.pop()
+
+                        /*https://stackoverflow.com/questions/13241005/add-delete-row-from-a-table*/
+
+                        let row = event.target.parentNode.parentNode;
+                        row.parentNode.removeChild(row);
+                        $.post("/remove_element_handler.html", {
+                            remove_element: element
+                        },
+                            function (data, status) {
+                                alert("Data: " + data + "\nStatus: " + status);
+                            })
+
+
+                    })
+                    cell.appendChild(btn)
+                    row.appendChild(cell)
+
+
+                    table_body.appendChild(row)
+
+
                     alert("Data: " + data + "\nStatus: " + status);
                 }
             );
