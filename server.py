@@ -69,10 +69,22 @@ def first_handler(db):
             content_length = int(self.headers['Content-Length']);
             body = self.rfile.read(content_length);
             postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
-            print(  postvars);
             cur_element = postvars['remove_element[]']
             db.conn.execute("""DELETE FROM Elements WHERE ELEMENT_NAME = ?""", (cur_element[2],))
-            message = "data received";
+            MolDisplay.radius = db.radius(); 
+            MolDisplay.element_name = db.element_name();
+            MolDisplay.header = ""
+            header = """<svg version="1.1" width="1000" height="1000"
+            xmlns="http://www.w3.org/2000/svg">"""
+            radiant = """<radialGradient id="%s" cx="-50%%" cy="-50%%" r="220%%" fx="20%%" fy="20%%">
+            <stop offset="0%%" stop-color="#%s"/>
+            <stop offset="50%%" stop-color="#%s"/>
+            <stop offset="100%%" stop-color="#%s"/>
+            </radialGradient>""" % ("any_element", "403A3A", "A65E2E", "633A34")
+            MolDisplay.header += header
+            MolDisplay.header += radiant
+            MolDisplay.header += db.radial_gradients();
+            message = "Successfully removed the element";
 
             self.send_response( 200 ); # OK
             self.send_header( "Content-type", "text/plain" );
@@ -87,28 +99,24 @@ def first_handler(db):
             content_length = int(self.headers['Content-Length']);
             body = self.rfile.read(content_length);
 
-            print( repr( body.decode('utf-8') ) );
 
             # convert POST content into a dictionary
             postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
 
-            print(  postvars);
             mol_name = postvars['mol_name'][0]
             file_content = postvars['fileInfo'][0]
-            print(file_content)
             mol_file = io.TextIOWrapper(io.BytesIO(bytes(file_content, 'UTF-8')))
             try:
                db.add_molecule(mol_name, mol_file)
-               mol = db.load_mol(mol_name)
-               mol.svg()
-               message = "data received";
+               
+               message = "Successfuly added the molecule %s" % (mol_name);
                self.send_response( 200 ); # OK
                self.send_header( "Content-type", "text/plain" );
                self.send_header( "Content-length", len(message) );
                self.end_headers();
                self.wfile.write( bytes( message, "utf-8" ) );
             except Exception as e:
-               message = "The file you have entered is not correct";
+               message = "The file you have entered is not correct, please try again";
                self.send_response( 200 ); # OK
                self.send_header( "Content-type", "text/plain" );
                self.send_header( "Content-length", len(message) );
@@ -118,19 +126,21 @@ def first_handler(db):
             content_length = int(self.headers['Content-Length']);
             body = self.rfile.read(content_length);
 
-            print( repr( body.decode('utf-8') ) );
 
             # convert POST content into a dictionary
             postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
-            print(postvars)
+            is_there_rotation = postvars['is_there_rotation'][0]
             mol = db.load_mol(postvars['mol_name'][0])
             
-            rotations = []
-            for n in postvars["rotations[]"]:
-               rotations.append(int(n))
 
-            mx = molecule.mx_wrapper(rotations[0],rotations[1],rotations[2]);
-            mol.xform( mx.xform_matrix );
+            if (is_there_rotation == 'true'):
+               rotations = []
+               for n in postvars["rotations[]"]:
+                  rotations.append(int(n))
+
+               mx = molecule.mx_wrapper(rotations[0],rotations[1],rotations[2]);
+               mol.xform( mx.xform_matrix );
+            mol.sort()
             image = mol.svg()
 
             self.send_response(200)
@@ -142,29 +152,41 @@ def first_handler(db):
             content_length = int(self.headers['Content-Length']);
             body = self.rfile.read(content_length);
 
-            print( repr( body.decode('utf-8') ) );
             
 
             # convert POST content into a dictionary
             postvars = urllib.parse.parse_qs( body.decode( 'utf-8' ) );
             element_info = [postvars['element_num'][0], postvars['element_code'][0], postvars['element_name'][0], postvars['color_1'][0], postvars['color_2'][0], postvars['color_3'][0], postvars['radius'][0]]
-            print(element_info)
-            db['Elements'] = (element_info[0], element_info[1], element_info[2], element_info[3], element_info[4], element_info[5], element_info[6])
-            MolDisplay.radius = db.radius(); 
-            MolDisplay.element_name = db.element_name(); 
-            MolDisplay.header += db.radial_gradients();
-            print(element_info)
+            try:
+               db['Elements'] = (element_info[0], element_info[1], element_info[2], element_info[3], element_info[4], element_info[5], element_info[6])
+               MolDisplay.radius = db.radius(); 
+               MolDisplay.element_name = db.element_name();
+               MolDisplay.header = ""
+               header = """<svg version="1.1" width="1000" height="1000"
+               xmlns="http://www.w3.org/2000/svg">"""
+               radiant = """<radialGradient id="%s" cx="-50%%" cy="-50%%" r="220%%" fx="20%%" fy="20%%">
+               <stop offset="0%%" stop-color="#%s"/>
+               <stop offset="50%%" stop-color="#%s"/>
+               <stop offset="100%%" stop-color="#%s"/>
+               </radialGradient>""" % ("any_element", "403A3A", "A65E2E", "633A34")
+               MolDisplay.header += header
+               MolDisplay.header += radiant
+               MolDisplay.header += db.radial_gradients();
             
-            
+               message = "Successfully added the element";
 
-            message = "data received";
-
-            self.send_response( 200 ); # OK
-            self.send_header( "Content-type", "text/plain" );
-            self.send_header( "Content-length", len(message) );
-            self.end_headers();
-
-            self.wfile.write( bytes( message, "utf-8" ) );
+               self.send_response( 200 ); # OK
+               self.send_header( "Content-type", "text/plain" );
+               self.send_header( "Content-length", len(message) );
+               self.end_headers();
+               self.wfile.write( bytes( message, "utf-8" ) );
+            except:
+               message = "The information you have entered is invalid, please try again.";
+               self.send_response( 200 ); # OK
+               self.send_header( "Content-type", "text/plain" );
+               self.send_header( "Content-length", len(message) );
+               self.end_headers();
+               self.wfile.write( bytes( message, "utf-8" ) );
          else:
             self.send_response( 404 );
             self.end_headers();
@@ -176,13 +198,13 @@ def first_handler(db):
 
 
 
-db = molsql.Database(reset=True); 
-db.create_tables(); 
+db = molsql.Database(reset=False); 
+# db.create_tables(); 
  
-db['Elements'] = ( 1, 'H', 'Hydrogen', 'FFFFFF', '050505', '020202', 25 ); 
-db['Elements'] = ( 6, 'C', 'Carbon',   '808080', '010101', '000000', 40 ); 
-db['Elements'] = ( 7, 'N', 'Nitrogen', '0000FF', '000005', '000002', 40 ); 
-db['Elements'] = ( 8, 'O', 'Oxygen',   'FF0000', '050000', '020000', 40 );
+# db['Elements'] = ( 1, 'H', 'Hydrogen', 'FFFFFF', '050505', '020202', 25 ); 
+# db['Elements'] = ( 6, 'C', 'Carbon',   '808080', '010101', '000000', 40 ); 
+# db['Elements'] = ( 7, 'N', 'Nitrogen', '0000FF', '000005', '000002', 40 ); 
+# db['Elements'] = ( 8, 'O', 'Oxygen',   'FF0000', '050000', '020000', 40 );
 MolDisplay.radius = db.radius(); 
 MolDisplay.element_name = db.element_name(); 
 MolDisplay.header += db.radial_gradients();

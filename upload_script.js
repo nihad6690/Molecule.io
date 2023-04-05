@@ -15,7 +15,7 @@ $(document).ready(() => {
             alert("File extension not supported!");
         }
         else {
-            /*https://www.javascripttutorial.net/web-apis/javascript-filereader/#:~:text=To%20read%20the%20content%20of,drag%20%26%20drop%20or%20file%20input.&text=The%20readAsDataURL()%20method%20reads,get%20from%20the%20FileList%20object.*/ 
+            /*https://www.javascripttutorial.net/web-apis/javascript-filereader/#:~:text=To%20read%20the%20content%20of,drag%20%26%20drop%20or%20file%20input.&text=The%20readAsDataURL()%20method%20reads,get%20from%20the%20FileList%20object.*/
             const reader = new FileReader();
             reader.readAsText(document.getElementById('myFile').files[0]);
             reader.addEventListener('load', (event) => {
@@ -23,12 +23,12 @@ $(document).ready(() => {
                 $.post("/upload_handler.html",
                     /* pass a JavaScript dictionary */
                     {
-                        mol_name: $("#mol_name").val(),
+                        mol_name: $("#mol_name").val().replaceAll(/\s/g, ''),
                         fileInfo: event.target.result	/* retreive value of name field */
 
                     },
                     function (data, status) {
-                        alert("Data: " + data + "\nStatus: " + status);
+                        alert(data);
                     }
                 );
             });

@@ -13,8 +13,16 @@ import molecule
 #     "O": "red",
 #     "N": "blue",
 # }
+
+
 header = """<svg version="1.1" width="1000" height="1000"
 xmlns="http://www.w3.org/2000/svg">"""
+radiant = """<radialGradient id="%s" cx="-50%%" cy="-50%%" r="220%%" fx="20%%" fy="20%%">
+<stop offset="0%%" stop-color="#%s"/>
+<stop offset="50%%" stop-color="#%s"/>
+<stop offset="100%%" stop-color="#%s"/>
+</radialGradient>""" % ("any_element", "403A3A", "A65E2E", "633A34")
+header+= radiant
 footer = """</svg>"""
 offsetx = 500
 offsety = 500
@@ -24,6 +32,7 @@ class Atom:
     def __init__(self, c_atom):
         self.c_atom = c_atom
         self.z = c_atom.z
+        
 
     #return a string that displays the element, x, y, and z values
     def __str__(self):
@@ -31,7 +40,10 @@ class Atom:
     
     #returns the svg method circle by the x, y, radius, and color of the atom 
     def svg(self):
-        return  ' <circle cx="%.2f" cy="%.2f" r="%d" fill="url(#%s)"/>\n' % ((self.c_atom.x * 100) + offsetx, (self.c_atom.y*100)+offsety, radius[self.c_atom.element], element_name[self.c_atom.element])
+        if self.c_atom.element not in radius and self.c_atom.element not in element_name:
+            return  ' <circle cx="%.2f" cy="%.2f" r="%d" fill="url(#%s)"/>\n' % ((self.c_atom.x * 100) + offsetx, (self.c_atom.y*100)+offsety, 30, "any_element")
+        else:
+            return  ' <circle cx="%.2f" cy="%.2f" r="%d" fill="url(#%s)"/>\n' % ((self.c_atom.x * 100) + offsetx, (self.c_atom.y*100)+offsety, radius[self.c_atom.element], element_name[self.c_atom.element])
     
 class Bond:
     def __init__(self, c_bond):
@@ -62,13 +74,14 @@ class Bond:
         
 
 class Molecule(molecule.molecule):
-    
+
+
+
     # uses all the atoms and bonds in the molecule to create a svg
     # first puts all the atoms and bonds from the molecule to an array
     # then uses the pseudocode code of  final pass of a merge sort function given in the assignment description to create the
     # svg string by using the class Atom and Bond to get the approiate svg string which is appended together and returned
     def svg(self):
-        
         image = ''
         image += header
     
@@ -151,17 +164,10 @@ class Molecule(molecule.molecule):
                 line_words = cur_line.strip().split(" ")
                 line_words[:] = [x for x in line_words if x]
                 self.append_bond(int(line_words[0]) - 1, int(line_words[1]) - 1, int(line_words[2]))
-            
-   
-        
+                
             
         
         
             
         
         
-
-
-
-
-    

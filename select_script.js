@@ -1,3 +1,33 @@
+const add_molecule_to_table = (all_mols, cur) => {
+    table_body = document.getElementById('table_body');
+    let row = document.createElement("tr")
+    for (let i = 0; i < 3; i++) {
+        let cell = document.createElement("td")
+        cell.innerText = cur[i]
+        row.appendChild(cell)
+    }
+    cell = document.createElement("td")
+    let btn = document.createElement("button")
+    btn.className = "btn btn-success"
+    btn.innerText = "Select Molecule"
+    btn.addEventListener('click', (event) => {
+
+        let mol_name = event.target.closest("tr").firstChild.innerText
+        document.getElementById("selected_molecule").innerText = `Selected molecule = ${mol_name}`
+        sessionStorage.setItem("selected_mol", mol_name)
+        alert(`You have selected the molecule ${mol_name} which has ${all_mols[mol_name][0]} atoms and ${all_mols[mol_name][1]} bonds.`)
+
+
+
+    })
+    cell.appendChild(btn)
+    row.appendChild(cell)
+    table_body.appendChild(row)
+}
+
+
+
+
 $(document).ready(() => {
 
     $.get("/get_mol.html", (data, status) => {
@@ -11,16 +41,8 @@ $(document).ready(() => {
         const buttonsContainer = document.getElementById("buttonsContainer")
         let keys = Object.keys(all_mols)
         for (let i = 0; i < Object.keys(all_mols).length; i++) {
-            const btn = document.createElement("button")
-            const btn_text = `${keys[i]}`
-            btn.innerText = btn_text
-            btn.addEventListener("click", (event) => {
-                document.getElementById("selected_molecule").innerText = `Selected molecule = ${event.target.innerText}`
-                sessionStorage.setItem("selected_mol", event.target.innerText)
-                alert(` You have selected the the molecule ${event.target.innerText} atom_no = ${all_mols[event.target.innerText][0]} bond_no = ${all_mols[event.target.innerText][1]} `)
-            })
-            buttonsContainer.appendChild(btn)
-            buttonsContainer.appendChild(document.createElement("br"))
+            add_molecule_to_table(all_mols, [`${keys[i]}`, `${all_mols[keys[i]][0]}`, `${all_mols[keys[i]][1]}`])
+
 
         }
 
